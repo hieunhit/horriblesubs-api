@@ -12,7 +12,7 @@ const defaultOptions = {
 
 module.exports = class HorribleSubsAPI {
 
-  constructor({options = defaultOptions, debug = false, cloudflare = true} = {}) {
+  constructor({ options = defaultOptions, debug = false, cloudflare = true } = {}) {
     if (cloudflare) {
       this._cloudflare = true;
       this._request = cloudscraper.request;
@@ -231,7 +231,7 @@ module.exports = class HorribleSubsAPI {
     return new Promise((resolve, reject) => {
       let options;
       if (this._cloudflare) {
-        options = Object.assign({}, this._options, {method: 'GET', url: this._options.baseUrl + uri, qs});
+        options = Object.assign({}, this._options, { method: 'GET', url: this._options.baseUrl + uri, qs });
         options.baseUrl = null;
       } else {
         options = { uri, qs };
@@ -253,10 +253,11 @@ module.exports = class HorribleSubsAPI {
   getAllAnime() {
     return this._get('/shows/').then($ => {
       const anime = [];
-      $('div.ind-show.linkful').map(function () {
+      $('div.ind-show.linkful').map(function() {
         const entry = $(this).find('a');
         anime.push({
-          link: entry.attr('href'), slug: entry.attr('href').match(/\/shows\/(.*)/i)[1],
+          link: entry.attr('href'),
+          slug: entry.attr('href').match(/\/shows\/(.*)/i)[1],
           title: entry.attr('title')
         });
       });
@@ -297,7 +298,7 @@ module.exports = class HorribleSubsAPI {
             return data;
           }
 
-          table.each(function () {
+          table.each(function() {
             const entry = $(this);
 
             const label = entry.find('td.dl-label').text();
@@ -310,13 +311,14 @@ module.exports = class HorribleSubsAPI {
               provider: 'HorribleSubs'
             };
 
-            const season = 1;
+            let season = 1;
 
             const seasonal = /(.*).[Ss](\d)\s-\s(\d+).\[(\d{3,4}p)\]/i;
             const oneSeason = /(.*)\s-\s(\d+).\[(\d{3,4}p)\]/i;
             let slug, episode, quality;
             if (label.match(seasonal)) {
               data.slug = label.match(seasonal)[1].replace(/[,!]/gi, '').replace(/\s-\s/gi, ' ').replace(/[\+\s\']/g, '-').toLowerCase();
+              season = parseInt(label.match(seasonal)[2], 10);
               episode = parseInt(label.match(seasonal)[3], 10);
               quality = label.match(seasonal)[4];
             } else if (label.match(oneSeason)) {
