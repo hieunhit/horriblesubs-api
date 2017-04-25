@@ -313,18 +313,18 @@ module.exports = class HorribleSubsAPI {
 
             let season = 1;
 
-            const seasonal = /(.*).[Ss](\d)\s-\s(\d+).\[(\d{3,4}p)\]/i;
-            const oneSeason = /(.*)\s-\s(\d+).\[(\d{3,4}p)\]/i;
+            const seasonal = /(.*).[Ss](\d)\s-\s(\d+(\.\d{0,2})?)(v\d+)?.\[(\d{3,4}p)\]/i;
+            const oneSeason = /(.*)\s-\s(\d+(\.\d{0,2})?)(v\d+)?.\[(\d{3,4}p)\]/i;
             let slug, episode, quality;
             if (label.match(seasonal)) {
               data.slug = label.match(seasonal)[1].replace(/[,!]/gi, '').replace(/\s-\s/gi, ' ').replace(/[\+\s\']/g, '-').toLowerCase();
               season = parseInt(label.match(seasonal)[2], 10);
-              episode = parseInt(label.match(seasonal)[3], 10);
-              quality = label.match(seasonal)[4];
+              episode = label.match(seasonal)[3];
+              quality = label.match(seasonal)[6];
             } else if (label.match(oneSeason)) {
               data.slug = label.match(oneSeason)[1].replace(/[,!]/gi, '').replace(/\s-\s/gi, ' ').replace(/[\+\s\']/g, '-').toLowerCase();
-              episode = parseInt(label.match(oneSeason)[2], 10);
-              quality = label.match(oneSeason)[3];
+              episode = label.match(oneSeason)[2];
+              quality = label.match(oneSeason)[5];
             }
 
             data.slug = data.slug in horribleSubsMap ? horribleSubsMap[data.slug] : data.slug;
